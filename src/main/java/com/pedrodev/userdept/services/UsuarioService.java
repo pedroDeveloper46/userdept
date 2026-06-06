@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import com.pedrodev.userdept.exceptions.DepartamentoNaoEncontradoException;
 import com.pedrodev.userdept.exceptions.EmailDuplicadoException;
 import com.pedrodev.userdept.exceptions.UsuarioNaoEncontradoException;
+import com.pedrodev.userdept.model.Departamento;
 import com.pedrodev.userdept.model.Usuario;
 import com.pedrodev.userdept.repository.DepartamentoRepository;
 import com.pedrodev.userdept.repository.UsuarioRepository;
@@ -52,6 +53,33 @@ public class UsuarioService {
 				new UsuarioNaoEncontradoException("Usuário não encontrado!"));
 
 		
+	}
+	
+	public Usuario buscarUsuarioPorEmail(Usuario usuario) {
+		return usuarioRepository.findByEmail(usuario.getEmail());
+	}
+	
+	public Usuario atualizarUsuario(Long id, Usuario usuario) {
+		
+		Usuario usuarioDb = buscarUsuarioPorId(id);
+		
+		if (usuarioDb == null) {
+			throw new UsuarioNaoEncontradoException("Erro: Usuário não encontrado");
+		}
+		
+		Usuario usuEmail = buscarUsuarioPorEmail(usuario);
+		
+		if(usuEmail.getId() != id) {
+			throw new EmailDuplicadoException("Erro: Email já existente");
+		}
+		
+		if(departamentoRepository.findById(usuario.getDepartamento().getId()) == null) {
+			throw new DepartamentoNaoEncontradoException("Erro: Departamento não encontrado");
+		}
+		
+		usuario.setId(id);
+		
+		return usuarioRepository.save(usuario);
 	}
 
 }

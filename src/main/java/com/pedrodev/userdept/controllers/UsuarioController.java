@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -47,6 +48,13 @@ public class UsuarioController {
 	@GetMapping(path="/listarDepQtdUsuario")
 	public List<DepartamentoQtdUsuario[]> listarDepQtdUsu() {
 		return departamentoRepository.buscarDepartamentoComQtdUsuarios();
+	}
+	
+	@PutMapping(value="/atualizar/{id}")
+	public ResponseEntity<?> atualizarUsuario(@PathVariable Long id, @Valid @RequestBody Usuario usuario) {
+		Usuario usuarioSave = usuarioService.atualizarUsuario(id, usuario);
+		
+		return ResponseEntity.ok(usuarioSave);
 	}
 
 }
